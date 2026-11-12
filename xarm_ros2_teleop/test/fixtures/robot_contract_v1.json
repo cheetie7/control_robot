@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "metadata": {
+    "server": "robot_learning",
+    "protocol_version": 1,
+    "strategy_id": "act_bc",
+    "state_dim": 8,
+    "action_format": "absolute_joint_rad_plus_gripper",
+    "execution_horizon": 25,
+    "image_keys": [
+      "top_camera",
+      "left_camera",
+      "right_camera"
+    ],
+    "action_frequency_hz": 30
+  },
+  "state": [
+    0,
+    0,
+    0,
+    1.4,
+    0,
+    1.4,
+    0,
+    0.5
+  ],
+  "image_shape": [
+    2,
+    3,
+    3
+  ],
+  "recording": {
+    "state_field": "observation.state",
+    "accepted_action_field": "action",
+    "selected_action_field": "action.selected",
+    "policy_action_field": "action.policy",
+    "policy_valid_field": "action.policy_valid",
+    "source_field": "action.source",
+    "action_source_encoding": {
+      "policy": 0,
+      "human": 1,
+      "hold": 2
+    },
+    "timestamp_dtype": "float64",
+    "reward_field": "reward",
+    "terminated_field": "terminated",
+    "truncated_field": "truncated",
+    "label_pattern": "rl/episode_NNNNNN.json"
+  }
+}

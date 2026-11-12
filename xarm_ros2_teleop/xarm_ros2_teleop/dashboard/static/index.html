@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>control_robot · 机器人操作台</title>
+    <link rel="stylesheet" href="/static/styles.css?v=20261001.1" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">CONTROL ROBOT</p>
+        <h1 id="page-title">机器人操作台</h1>
+      </div>
+      <div class="topbar-status">
+        <span id="connection-dot" class="connection-dot"></span>
+        <span id="connection-label">正在连接</span>
+        <span id="mode-status" class="status-pill status-unknown">UNKNOWN</span>
+        <span id="system-status" class="status-pill status-unknown">UNKNOWN</span>
+      </div>
+    </header>
+
+    <section id="teleop-settings" class="card settings-bar mode-panel">
+      <div class="settings-title">
+        <div>
+          <p class="section-label">DATASET SESSION</p>
+          <h2>录制设置</h2>
+        </div>
+        <span id="session-config-status" class="status-pill status-unknown">EDITABLE</span>
+      </div>
+      <label class="settings-field settings-instruction">
+        <span>任务指令</span>
+        <input id="session-instruction" type="text" autocomplete="off" placeholder="数据集 task 指令" />
+      </label>
+      <label class="settings-field settings-path">
+        <span>数据保存目录</span>
+        <input id="session-dataset-root" type="text" autocomplete="off" spellcheck="false" placeholder="~/datasets/task/run_001" />
+      </label>
+      <fieldset class="settings-field settings-mode">
+        <legend>写入模式</legend>
+        <div class="mode-selector">
+          <label class="mode-option" title="续写已存在且结构兼容的数据集">
+            <input type="radio" name="write-mode" value="resume" checked />
+            <strong>Resume</strong>
+          </label>
+          <label class="mode-option" title="清空所选目录中的录制分类后重建">
+            <input type="radio" name="write-mode" value="overwrite" />
+            <strong>Overwrite</strong>
+          </label>
+        </div>
+      </fieldset>
+      <button id="apply-session-settings" class="apply-button" type="button">应用设置</button>
+      <p id="session-feedback" class="session-feedback" hidden></p>
+    </section>
+
+    <main class="workspace">
+      <section class="viewer-card card">
+        <div class="card-heading">
+          <div>
+            <p class="section-label">LIVE DATA</p>
+            <h2>Rerun 实时视图</h2>
+          </div>
+          <button id="reload-viewer" class="ghost-button">重新加载</button>
+        </div>
+        <div class="viewer-shell">
+          <iframe id="rerun-viewer" title="Rerun Web Viewer"></iframe>
+          <div id="viewer-placeholder" class="viewer-placeholder">等待 Rerun 服务启动…</div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="card operation-card">
+          <div class="card-heading compact">
+            <div>
+              <p class="section-label">RUNTIME MODE</p>
+              <h2 id="operation-mode">等待运行模式</h2>
+            </div>
+            <span id="motion-state" class="status-pill status-unknown">UNKNOWN</span>
+          </div>
+          <p id="operation-detail" class="operation-detail">等待系统状态</p>
+          <p id="vr-detail" class="operation-detail" hidden>等待 VR 输入</p>
+
+          <div id="inference-panel" class="mode-panel" hidden>
+            <div class="metric-grid operation-metrics">
+              <div><span>Inference</span><strong id="inference-phase">UNKNOWN</strong></div>
+              <div><span>远程策略</span><strong id="inference-source">DISABLED</strong></div>
+            </div>
+            <button id="inference-stop" class="action-button danger wide-action" type="button" disabled>
+              <span>停止推理 Rollout</span><kbd>Esc</kbd>
+            </button>
+          </div>
+
+          <div id="evaluation-panel" class="mode-panel" hidden>
+            <div class="metric-grid operation-metrics">
+              <div><span>评测状态</span><strong id="evaluation-state">UNKNOWN</strong></div>
+              <div><span>剩余时间</span><strong id="evaluation-remaining">30.0 s</strong></div>
+              <div><span>成功</span><strong id="evaluation-successes">0</strong></div>
+              <div><span>失败</span><strong id="evaluation-failures">0</strong></div>
+              <div><span>丢弃</span><strong id="evaluation-discards">0</strong></div>
+              <div><span>最近结果</span><strong id="evaluation-last-outcome">-</strong></div>
+              <div><span>开始条件</span><strong id="evaluation-start-blocker">等待状态</strong></div>
+              <div class="wide-metric"><span>当前处理</span><strong id="evaluation-operation">等待录制组件</strong></div>
+            </div>
+            <div class="control-grid evaluation-controls">
+              <button data-evaluation-action="start" class="action-button primary" disabled>
+                <span>开始评测</span><kbd>S</kbd>
+              </button>
+              <button data-evaluation-action="success" class="action-button success" disabled>
+                <span>成功并保存</span><kbd>Y</kbd>
+              </button>
+              <button data-evaluation-action="failure" class="action-button warning" disabled>
+                <span>失败并保存</span><kbd>N</kbd>
+              </button>
+              <button data-evaluation-action="discard" class="action-button warning" disabled>
+                <span>丢弃本条</span><kbd>←</kbd>
+              </button>
+              <button data-evaluation-action="finish" class="action-button danger wide-action" disabled>
+                <span>结束评测</span><kbd>Esc</kbd>
+              </button>
+            </div>
+          </div>
+
+          <div id="rl-panel" class="mode-panel" hidden>
+            <div class="metric-grid operation-metrics">
+              <div><span>录制状态</span><strong id="rl-episode-state">UNKNOWN</strong></div>
+              <div><span>录制帧 / 时长</span><strong id="rl-capture-progress">0 / 0.0 s</strong></div>
+              <div><span>RL 状态</span><strong id="rl-state">UNKNOWN</strong></div>
+              <div><span>动作来源</span><strong id="rl-source">unknown</strong></div>
+              <div><span>人类接管</span><strong id="rl-intervention">否</strong></div>
+              <div><span>人工设备</span><strong id="rl-human-ready">等待设备就绪</strong></div>
+              <div><span>最近奖励</span><strong id="rl-last-reward">-</strong></div>
+              <div class="wide-metric"><span>已保存 success / failure / crash</span><strong id="rl-episode-counts">0 / 0 / 0</strong></div>
+              <div class="wide-metric"><span>最近结束原因</span><strong id="rl-last-outcome">-</strong></div>
+              <div class="wide-metric"><span>当前处理</span><strong id="rl-operation">等待录制组件</strong></div>
+            </div>
+            <div class="control-grid rl-controls">
+              <button data-rl-action="start" class="action-button primary" disabled>
+                <span>开始本条</span><kbd>S</kbd>
+              </button>
+              <button id="rl-switch" data-rl-action="switch" class="action-button primary" disabled>
+                <span>切换到人工</span><kbd>T</kbd>
+              </button>
+              <button data-rl-action="success" class="action-button success" disabled>
+                <span>任务成功 +1</span><kbd>Y</kbd>
+              </button>
+              <button data-rl-action="failure" class="action-button warning" disabled>
+                <span>任务失败 0</span><kbd>N</kbd>
+              </button>
+              <button data-rl-action="discard" class="action-button warning" disabled>
+                <span>丢弃本条并复位</span><kbd>←</kbd>
+              </button>
+              <button data-rl-action="finish" class="action-button danger" disabled>
+                <span>结束 RL 会话</span><kbd>Q</kbd>
+              </button>
+            </div>
+            <div class="rl-secondary-controls">
+              <button data-rl-action="stop" class="action-button warning" disabled>
+                <span>暂停运动（非急停）</span><kbd>Esc</kbd>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="teleop-recording" class="card recording-card mode-panel">
+          <div class="card-heading compact">
+            <div>
+              <p class="section-label">RECORDING</p>
+              <h2>Episode <span id="episode-index">0</span></h2>
+            </div>
+            <span id="recording-state" class="status-pill status-unknown">UNKNOWN</span>
+          </div>
+          <div class="metric-grid">
+            <div><span>已完成</span><strong id="episodes-complete">0 / 0</strong></div>
+            <div><span>当前帧</span><strong id="frame-count">0</strong></div>
+            <div><span>时长</span><strong id="elapsed-time">0.0 s</strong></div>
+            <div><span>Reset</span><strong id="reset-state">UNKNOWN</strong></div>
+            <div><span>Warm-up</span><strong id="session-state">UNKNOWN</strong></div>
+            <div><span>Instruction</span><strong id="instruction">-</strong></div>
+            <div class="wide-metric"><span>当前处理</span><strong id="recording-operation">等待录制组件</strong></div>
+          </div>
+          <p id="dataset-root" class="dataset-root">等待数据集信息</p>
+        </section>
+
+        <section id="teleop-controls" class="card control-card mode-panel">
+          <p class="section-label">CONTROLS</p>
+          <div class="control-grid">
+            <button id="action-staging" data-action="staging" class="action-button primary" disabled>
+              <span>进入预定位</span><kbd>G</kbd>
+            </button>
+            <button id="action-start" data-action="start" class="action-button primary" disabled>
+              <span>开始录制</span><kbd>S</kbd>
+            </button>
+            <button id="action-discard" data-action="discard" class="action-button warning" disabled>
+              <span>丢弃本条</span><kbd>←</kbd>
+            </button>
+            <button id="action-save" data-action="save" class="action-button success" disabled>
+              <span>Success 保存</span><kbd>→</kbd>
+            </button>
+            <button id="action-optimal" data-action="optimal" class="action-button success" disabled>
+              <span>Optimal 保存</span><kbd>O</kbd>
+            </button>
+            <button id="action-failure" data-action="failure" class="action-button warning" disabled>
+              <span>Failure 保存</span><kbd>F</kbd>
+            </button>
+            <button id="action-finish" data-action="finish" class="action-button danger" disabled>
+              <span>结束录制</span><kbd>Esc</kbd>
+            </button>
+          </div>
+        </section>
+
+        <section class="card hardware-card">
+          <div class="card-heading compact">
+            <div>
+              <p class="section-label">HARDWARE</p>
+              <h2>设备连接</h2>
+            </div>
+          </div>
+          <div id="hardware-list" class="hardware-list"></div>
+        </section>
+
+        <section class="card errors-card">
+          <div class="card-heading compact">
+            <div>
+              <p class="section-label">EVENTS</p>
+              <h2>错误与警告</h2>
+            </div>
+            <span id="error-count" class="count-badge">0</span>
+          </div>
+          <div id="error-list" class="error-list"></div>
+        </section>
+      </aside>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <script src="/static/app.js?v=20261014.1" defer></script>
+  </body>
+</html>

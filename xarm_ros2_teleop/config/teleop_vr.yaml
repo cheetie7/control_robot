@@ -1,0 +1,29 @@
+# Reuse the current three-camera, recording, gripper and reset configuration.
+base_config: teleop_system.yaml
+
+teleop:
+  source: vr
+  vr:
+    hand: right
+    device_serial: ""
+    tcp_port: 7447
+    # Active rotation: quest_floor FLU vectors -> robot base vectors.
+    # Confirm all axes in preview before enabling physical motion.
+    base_from_floor_rotation: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    position_scale: 1.0
+    input_timeout_sec: 0.25
+    ready_stable_sec: 0.3
+    max_linear_speed_m_s: 0.10
+    max_linear_acceleration_m_s2: 0.20
+    max_angular_speed_rad_s: 0.5
+    # REQUIRED for --motion: measured safe base-frame xyz bounds, metres.
+    # Do not substitute generic desktop dimensions for your actual workspace.
+    workspace_lower_m: null
+    workspace_upper_m: null
+
+recording:
+  root: "~/datasets/vr"
+  dataset_name: ""
+  append_timestamp: false
+  repo_id: local/xarm7_vr_tcp
+  robot_type: xarm7_vr_tcp

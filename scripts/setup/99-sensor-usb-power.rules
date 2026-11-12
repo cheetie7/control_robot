@@ -1,0 +1,10 @@
+# Keep every teleoperation USB sensor awake.
+#
+# Ubuntu suspends idle USB devices after ~2 s by default. libuvc-based sensors
+# (Xense, RealSense, Orbbec) regularly drop off the bus when the kernel tries
+# to suspend them mid-stream, so runtime power management is disabled for the
+# three sensor vendors used by this system:
+#   3938 Xense Robotics   8086 Intel RealSense   2bc5 Orbbec
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3938", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="8086", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="2bc5", TEST=="power/control", ATTR{power/control}="on"

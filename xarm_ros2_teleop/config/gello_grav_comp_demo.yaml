@@ -1,0 +1,71 @@
+name: gello_grav_comp_demo
+
+dynamixel:
+  # Persistent FTDI name for the FACTR leader; do not use Robotiq's ttyUSB node.
+  dynamixel_port: "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FTB4PR9G-if00-port0"
+  baudrate: 1000000
+  servo_types: [
+    "XL330_M288_T", "XL330_M288_T", "XL330_M288_T", "XL330_M288_T",
+    "XL330_M288_T", "XL330_M288_T", "XL330_M288_T", "XL330_M077_T",
+  ]
+  # Initial safe trial: same signs as the verified runtime position mapping.
+  # Torque-direction signs still need physical verification joint by joint.
+  joint_signs: [1, 1, 1, 1, 1, 1, 1, 1]
+
+arm_teleop:
+  leader_urdf: "gello_real_dynamic.urdf"
+  num_arm_joints: 7
+  arm_joint_limits_max: [3.1416, 3.1416, 3.1416, 3.1416, 3.1416, 3.1416, 3.1416]
+  arm_joint_limits_min: [-3.1416, -3.1416, -3.1416, -3.1416, -3.1416, -3.1416, -3.1416]
+  arm_joint_limits_safety_margin: 0.05
+  initialization:
+    # Known manual calibration pose: seven arm joints plus open gripper.
+    start_joints: [0.0, 0.0, 0.0, 1.57, 0.0, 1.57, 0.0, 0.0]
+
+gripper_teleop:
+  actuation_range: 0.8
+  actuation_range_min: -0.8
+
+controller:
+  frequency: 200
+  torque_feedback:
+    enable: False
+    gain: 0.0
+    damping: 0.0
+    motor_scalar: 1.0
+  gravity_comp:
+    enable: False
+    gain: 0.2
+    # URDF coordinates of the physical folded pose captured by the SECOND stage
+    # of factr_calibrate (the pose the old system calibrated to at every boot).
+    # The measured xArm-frame -> URDF-frame translation is stored in the offset
+    # file; this value only identifies the pose during that capture.
+    model_reference_joint_positions: [-1.56, 0.03, 1.58, 0.34, 0.03, 1.58, -1.60]
+  null_space_regulation:
+    null_space_joint_target: [-1.56, 0.03, 1.58, 0.34, 0.03, 1.58, -1.60, 0.0]
+    kp: 0.0
+    kd: 0.0
+  static_friction_comp:
+    enable_speed: 0.0
+    gain: 0.0
+  joint_limit_barrier:
+    kp: 1.03561658022
+    kd: 0.04315069084
+    # The eighth motor is a hand-operated gripper encoder. Keep its commanded
+    # current at zero even beyond the configured mapping range so closing it
+    # never produces an artificial end-stop resistance. Arm barriers stay on.
+    gripper_enable: false
+  # Reset-time software PD servo (current mode; no Dynamixel mode switch).
+  # Upstream FACTR set_leader_joint_pos verified gains; requires a >=200 Hz
+  # control loop. step 0.5 rad gives the PD full authority within ~2 cycles
+  # (smaller values weaken the servo against gearbox stiction).
+  joint_position_control:
+    kp: 1.03561658022
+    # Damping for the autonomous reset servo; the upstream hand-guided value
+    # (0.043) leaves the wrist joints limit-cycling around the target.
+    kd: 0.2
+    interpolation_step_size: 0.5
+  gripper_feedback:
+    enable: False
+    gain: 1.0
+    ema_beta: 0.95

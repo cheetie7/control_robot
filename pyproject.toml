@@ -1,0 +1,65 @@
+[project]
+name = "control-robot-environment"
+version = "0.1.0"
+description = "Locked Python environment for the ROS 2 Humble control_robot workspace"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+  "cryptography==43.0.3",
+  "cypack>=0.1.2",
+  "cyclonedds-nightly==2025.7.29",
+  "dynamixel-sdk>=3.7,<4",
+  "fastapi>=0.115,<1",
+  "lz4>=4,<5",
+  "lerobot==0.4.4",
+  "msgpack>=1.0,<2",
+  "numpy>=1.23,<2",
+  "onnxruntime-gpu>=1.18,<=1.20",
+  "opencv-python>=4.8,<4.12",
+  "ormsgpack>=1.11,<2",
+  "pillow>=10.2,<13",
+  "psutil>=5.9,<8",
+  "pyudev>=0.24,<1",
+  "pyyaml==6.0.2",
+  "pyrobotiqgripper==3.2.8",
+  "rerun-sdk==0.26.2",
+  # ROS 2 Humble colcon --symlink-install needs the legacy develop options removed in 80.x.
+  "setuptools==79.0.1",
+  "xarm-python-sdk>=1.16,<2",
+  "xensesdk==2.0.1",
+  "uvicorn[standard]>=0.30,<1",
+  "websockets>=15,<16",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=7,<9",
+  "ruff>=0.8,<1",
+]
+
+[tool.uv]
+package = false
+environments = [
+  "sys_platform == 'linux' and python_version == '3.10'",
+]
+# pyrobotiqgripper 3.2.8 incorrectly requires numpy>=1.28 and pytest>=9.1.1
+# at runtime. Keep both packages on the versions used by this ROS 2 workspace.
+override-dependencies = [
+  "numpy>=1.23,<2",
+  "pytest>=7,<9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "xarm_ros2_teleop",
+  "factr_teleop",
+]
+testpaths = [
+  "xarm_ros2_teleop/test",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

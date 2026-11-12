@@ -1,0 +1,426 @@
+system:
+  name: control_robot
+
+teleop:
+  source: factr
+  enabled: true
+  config_file: gello_grav_comp_demo.yaml
+  # A runtime USB loss keeps the ROS session alive and retries this persistent port.
+  reconnect_period_sec: 1.0
+  recovery_successful_reads: 5
+  # Created by the standalone factr_calibrate command and required by launch.
+  offset_file: "~/.config/control_robot/offset.yaml"
+  # Saved into offset.yaml during calibration. Dynamixel joint_signs is separate.
+  xarm_to_factr_signs: [1, 1, 1, 1, 1, 1, 1]
+
+xarm:
+  enabled: true
+  ip: "192.168.1.215"
+  control_period: 0.01
+  # Error, joint-state and torque SDK reads run independently from control.
+  state_read_rate_hz: 60.0
+  # Joint-space limits used by xArm set_servo_angle in mode 6.
+  initial_joint_speed_rad_s: 0.5
+  max_joint_speed_rad_s: 1.2
+  max_joint_acceleration_rad_s2: 1.28
+  # Leader glitch guard: one FACTR sample jumping further than this from the
+  # last accepted target is dropped and the previous target keeps being sent;
+  # rejections lasting longer than max_leader_reject_sec stop following until
+  # the leader stays consistent for several consecutive samples again.
+  max_leader_step_rad: 0.2
+  max_leader_reject_sec: 0.5
+  # During active teleoperation, stale FACTR commands put xArm into mode-0 hold.
+  leader_command_timeout_sec: 0.25
+  # Absolute seven-axis xArm pose in radians, shared by startup and reset fallback.
+  initial_joint_positions: [0.0, 0.0, 0.0, 1.57, 0.0, 1.57, 0.0]
+  # Every reset first lifts the end effector straight up (TCP space) by this
+  # many millimetres at this speed before the joint motion to the home pose.
+  # 0 disables the lift. If the current TCP z already reaches the skip height,
+  # reset goes directly to the configured joint pose without lifting again.
+  reset_lift_mm: 100.0
+  reset_lift_speed_mm_s: 50.0
+  reset_lift_skip_above_z_mm: 400.0
+
+robotiq:
+  enabled: true
+  com_port: "/dev/robotiq_rs485"
+  device_id: 9
+  debug: false
+  command_topic: "/xarm/gripper_pos"
+  control_period: 0.05
+  speed: 255
+  force: 100
+  minimal_motion: 2
+  activate_on_startup: true
+  # Cold power-on calibration may exceed pyRobotiqGripper's 5 s default.
+  activation_timeout_sec: 15.0
+
+# Remote OpenPI-compatible evaluation. Launch keeps this disabled unless
+# inference:=true is passed; inference_motion:=true is a separate physical
+# arming step. Model state/actions are [joint1..7 absolute rad, gripper 0..1].
+inference:
+  enabled: false
+  dry_run: true
+  host: "127.0.0.1"
+  port: 8081
+  prompt: "complete the manipulation task"
+  # ACT waypoints inherit the 30 FPS training timeline. The inference node
+  # linearly resamples each returned chunk onto xArm's 100 Hz control clock.
+  policy_frequency_hz: 30.0
+  inference_timeout_sec: 30.0
+  observation_timeout_sec: 0.25
+  max_camera_skew_sec: 0.08
+  max_runtime_sec: 120.0
+  max_chunks: 100
+  # Emergency discontinuity guard. Compare ACT's first target with the measured
+  # state used for inference, then compare adjacent targets inside the chunk.
+  max_joint_step_rad: 0.5
+  # xArm 7 absolute joint bounds in radians; tighten for the task workspace.
+  joint_lower_rad: [-6.2832, -2.059, -6.2832, -0.19198, -6.2832, -1.69297, -6.2832]
+  joint_upper_rad: [6.2832, 2.0944, 6.2832, 3.927, 6.2832, 3.1416, 6.2832]
+  # Empty means every enabled RGB stream under recording.streams. Set stream
+  # keys here to select a subset. Topics and crop sizes are never duplicated.
+  image_streams: []
+
+# Human-labeled ACT evaluation sessions. Every saved rollout receives an
+# immutable success/failure sidecar; discarded attempts never enter LeRobot.
+evaluation:
+  enabled: true
+  dataset_root: "/home/gxy/datasets/eval"
+  max_episode_sec: 30.0
+  max_episodes: 100
+  success_reward: 1.0
+  failure_reward: 0.0
+
+# Manual RL data collection and human intervention. This node owns robot command
+# topics only when rl:=true is passed to launch. FACTR and policy actions are
+# routed to candidate topics and cannot bypass the arbiter.
+rl:
+  enabled: false
+  dataset_root: "/home/gxy/datasets/rl"
+  # The remote evaluator, an external RL policy and FACTR all use these
+  # candidate-action topics; only human_intervention forwards selected actions.
+  policy_action_topic: "/control/policy_action"
+  human_arm_topic: "/control/factr_arm"
+  human_gripper_topic: "/control/factr_gripper"
+  human_connected_topic: "/factr/connected"
+  keyboard_enabled: true
+  keyboard_device: "/dev/tty"
+  stop_velocity_rad_s: 0.03
+  stop_stable_sec: 0.3
+  # Require continuously fresh human-device input before starting a new episode.
+  human_ready_stable_sec: 0.3
+  human_input_timeout_sec: 0.25
+  policy_timeout_sec: 0.25
+  max_human_joint_step_rad: 0.05
+  gripper_delta_scale: -1.0
+  success_reward: 1.0
+  failure_reward: 0.0
+  crash_reward: 0.0
+
+reset:
+  enabled: true
+  action_name: /teleop/reset
+  timeout_sec: 30.0
+  state_timeout_sec: 0.5
+  stable_time_sec: 0.3
+  xarm_position_tolerance_rad: 0.03
+  xarm_velocity_tolerance_rad_s: 0.05
+  factr_state_publish_rate_hz: 60.0
+  # FACTR is free-held (gravity only) during reset; no alignment tolerances.
+  # Current ceiling for the gravity hold in Dynamixel current mode; the leader
+  # never switches operating mode. Must stay within (0, 900] mA.
+  factr_max_current_ma: 500
+
+  robotiq_open_threshold_bits: 5
+
+cameras:
+  # Set this switch to true when the configured cameras should be started.
+  # A false stream is disabled in the vendor driver, not filtered after publication.
+  # point_cloud=true requires color=true and depth=true explicitly.
+  enabled: true
+  devices:
+    - name: left_camera
+      enabled: true
+      vendor: realsense
+      model: d435
+      serial_number: "254622075079"
+      topic_prefix: camera/left
+      required: true
+      # Absolute delay from launch start. It gives diagnostics subscribers time
+      # to join before the first UVC stream opens.
+      startup_delay_sec: 0.5
+      # D435 native 4:3 profile; align_depth publishes depth at this resolution.
+      color:
+        enabled: true
+        width: 640
+        height: 480
+        fps: 30
+      # Depth temporarily off while the camera stack is being debugged.
+      depth:
+        enabled: false
+      # RGB-only collection: do not spend USB bandwidth on unused infrared.
+      infrared:
+        enabled: false
+        width: 640
+        height: 480
+        fps: 30
+      point_cloud:
+        enabled: false
+
+    - name: right_camera
+      enabled: true
+      vendor: realsense
+      model: d435
+      serial_number: "254522074404"
+      topic_prefix: camera/right
+      required: true
+      # Stagger USB stream opening without waiting on the left camera's health.
+      startup_delay_sec: 1.5
+      color:
+        enabled: true
+        width: 640
+        height: 480
+        fps: 30
+      # Depth temporarily off while the camera stack is being debugged.
+      depth:
+        enabled: false
+      # RGB-only collection: do not spend USB bandwidth on unused infrared.
+      infrared:
+        enabled: false
+        width: 640
+        height: 480
+        fps: 30
+      point_cloud:
+        enabled: false
+
+    # Third RGB view and the 30 Hz recording anchor.
+    - name: top_camera
+      enabled: true
+      vendor: orbbec
+      model: femto_bolt
+      serial_number: "CL8E36300RW"
+      topic_prefix: camera/side
+      required: true
+      startup_delay_sec: 2.5
+      # Femto Bolt has no 640x480 modes: 16:9 color sensor and NFOV/WFOV ToF.
+      # Nearest supported profiles; aligned depth is reprojected to 1280x720.
+      color:
+        enabled: true
+        width: 1280
+        height: 720
+        fps: 30
+      depth:
+        enabled: false
+        width: 640
+        height: 576
+        fps: 30
+      point_cloud:
+        enabled: false
+
+tactile:
+  # Set this switch to true when the configured tactile sensors should be started.
+  # A false output is omitted from selectSensorInfo(), so the SDK does not generate it.
+  # Keep disabled in the full robot workflow until sensors.launch.py passes.
+  enabled: false
+  devices:
+    - name: left_tactile
+      enabled: true
+      serial_number: "OG000475"
+      topic_prefix: tactile/left
+      required: true
+      startup_delay_sec: 3.5
+      publish_rate_hz: 30.0
+      # Optional Xense calibration file or directory. Empty uses SDK defaults.
+      config_path: ""
+      outputs:
+        rectify: true
+        difference: false
+        depth: false
+        marker_2d: false
+        force: false
+        force_norm: false
+        force_resultant: false
+
+    - name: right_tactile
+      enabled: true
+      serial_number: "OG000485"
+      topic_prefix: tactile/right
+      required: true
+      startup_delay_sec: 4.5
+      publish_rate_hz: 30.0
+      # Optional Xense calibration file or directory. Empty uses SDK defaults.
+      config_path: ""
+      outputs:
+        rectify: true
+        difference: false
+        depth: false
+        marker_2d: false
+        force: false
+        force_norm: false
+        force_resultant: false
+
+warmup:
+  # Applied independently of recording. Sensor drivers start at each device's
+  # absolute startup_delay_sec; readiness comes only from System Monitor.
+  enabled: true
+  sensor_ready_stable_time_sec: 0.5
+  # The first calibration may wait for a coarse manual FACTR match.
+  hardware_timeout_sec: 300.0
+  finished_delay_sec: 2.0
+  require_all_enabled_devices: true
+
+speech:
+  enabled: true
+  command: "espeak-ng"
+  voice: "en-us"
+  speed: 160
+  volume: 100
+  timeout_sec: 10.0
+  phrases:
+    warmup_started: "warm up"
+    warmup_finished: "warm up finished"
+    episode_started: "episode {episode} started"
+    episode_finished: "episode {episode} finished"
+    episode_discarded: "episode {episode} discarded"
+    reset_started: "resetting"
+    reset_finished: "reset finished"
+
+recording:
+  # The recorder is another node in teleop.launch.py; it has no separate launch file.
+  # Three RGB cameras are recorded; tactile, depth and infrared stay disabled.
+  enabled: true
+  # A run writes to root/dataset_name_YYYYmmdd_HHMMSS when append_timestamp=true.
+  root: "~/datasets/control_robot"
+  dataset_name: "lerobot_dataset"
+  append_timestamp: true
+  repo_id: "local/control_robot"
+  robot_type: "xarm7_factr"
+  fps: 30
+  # VLA natural-language command. It is stored in LeRobot's standard task field.
+  instruction: "teleoperate the robot to complete the task"
+  # One-episode hardware smoke test; increase this for a full collection session.
+  num_episodes: 1
+  # Saving or discarding an episode returns all actuators to
+  # xarm.initial_joint_positions before the next start is enabled.
+  reset_action_name: "/teleop/reset"
+
+  keyboard:
+    enabled: true
+    device: "/dev/tty"
+    # Warm-up only unlocks controls; the operator explicitly starts with s/Web.
+    auto_start_first_episode: false
+
+  # One output row is created for every accepted frame on this RGB topic.
+  anchor:
+    key: top_camera
+
+  sync:
+    # Choose the buffered image nearest the top-camera anchor timestamp. Camera
+    # hardware provides normal synchronization; skew is recorded for diagnosis.
+    # Compact action vectors keep a longer history for causal labels.
+    action_history_sec: 1.0
+    # Robotiq publishes at 20 Hz; nearest-state selection needs one complete
+    # 50 ms period plus normal scheduling margin.
+    max_state_skew_sec: 0.075
+    max_action_age_sec: 0.075
+
+  video:
+    vcodec: h264
+    image_writer_threads: 4
+    streaming_encoding: false
+    # Keep latency bounded: if disk writing falls behind, retain newer rows.
+    writer_queue_size: 16
+
+  streams:
+    # Keep the dataset stream name identical to the camera's logical name.
+    top_camera:
+      enabled: true
+      topic: "/camera/side/color"
+      type: rgb
+      # Store an aspect-preserving 640x480 training view of the 1280x720 topic:
+      # center-crop 960x720 (drops 160 px per side), then rescale by 2/3.
+      source_size: [1280, 720]
+      output_size: [640, 480]
+    left_camera:
+      enabled: true
+      topic: "/camera/left/color"
+      type: rgb
+    right_camera:
+      enabled: true
+      topic: "/camera/right/color"
+      type: rgb
+    # Depth is not part of the current three-RGB-camera dataset.
+    top_depth:
+      enabled: false
+      topic: "/camera/side/depth"
+      type: depth
+      depth_unit: mm
+      depth_min_m: 0.05
+      depth_max_m: 3.0
+      source_size: [1280, 720]
+      output_size: [640, 480]
+    # D435 aligned depth at the 640x480 color resolution.
+    left_depth:
+      enabled: false
+      topic: "/camera/left/depth"
+      type: depth
+      depth_unit: mm
+      depth_min_m: 0.05
+      depth_max_m: 3.0
+    right_depth:
+      enabled: false
+      topic: "/camera/right/depth"
+      type: depth
+      depth_unit: mm
+      depth_min_m: 0.05
+      depth_max_m: 3.0
+    # Disabled together with the tactile hardware; re-enable both when the
+    # left sensor serial is updated in the tactile devices block.
+    tactile_left:
+      enabled: false
+      topic: "/tactile/left/rectify"
+      type: rgb
+    tactile_right:
+      enabled: false
+      topic: "/tactile/right/rectify"
+      type: rgb
+    tactile_left_depth:
+      enabled: false
+      topic: "/tactile/left/depth"
+      type: depth
+      depth_unit: mm
+      depth_min_m: 0.001
+      depth_max_m: 5.0
+    tactile_right_depth:
+      enabled: false
+      topic: "/tactile/right/depth"
+      type: depth
+      depth_unit: mm
+      depth_min_m: 0.001
+      depth_max_m: 5.0
+
+dashboard:
+  enabled: true
+  # The first release intentionally exposes hardware controls only on this PC.
+  host: "127.0.0.1"
+  port: 8080
+  open_browser: true
+  status_rate_hz: 2.0
+  rosout_min_level: warn
+  rosout_history_size: 200
+  # Video encoding and the post-episode reset start together. Episode saving
+  # heavily loads the recorder process (GIL-bound video work), so the service
+  # wait must tolerate multi-second callback latency.
+  service_timeout_sec: 30.0
+
+  rerun:
+    enabled: true
+    grpc_port: 9876
+    web_port: 9090
+    # Camera previews overwrite static entities instead of accumulating video.
+    # This cap bounds the remaining lightweight joint/log history.
+    server_memory_limit: "16MiB"
+    # Preview only: recording remains at its configured native 30 FPS/resolution.
+    max_fps: 10
+    preview_scale: 0.5

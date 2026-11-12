@@ -1,0 +1,29 @@
+.venv/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# ROS 2/colcon workspace outputs live beside src/.
+../build/
+../install/
+../log/
+log/
+
+.DS_Store
+
+# Local code analysis and editor session output.
+/.ua/
+/.zcode/
+
+# Unity source/assets stay tracked; generated caches and APKs stay local.
+quest_pose_bridge/Library/
+quest_pose_bridge/Temp/
+quest_pose_bridge/Obj/
+quest_pose_bridge/Logs/
+quest_pose_bridge/UserSettings/
+quest_pose_bridge/Builds/
+quest_pose_bridge/.utmp/
+quest_pose_bridge/*.csproj
+quest_pose_bridge/*.sln*

@@ -1,0 +1,2 @@
+# Allow members of the xense group to access Xense Robotics USB devices.
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="3938", MODE="0660", GROUP="xense"

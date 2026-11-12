@@ -1,0 +1,15 @@
+# Same VR/TCP hardware route, shared manual RL console; no joint ACT fallback.
+base_config: teleop_vr.yaml
+
+rl:
+  enabled: true
+  dataset_root: "~/datasets/vr_rl"
+
+inference:
+  enabled: true
+  host: 127.0.0.1
+  port: 8081
+  policy_frequency_hz: 30.0
+
+recording:
+  root: "~/datasets/vr_rl"

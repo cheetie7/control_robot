@@ -1,0 +1,131 @@
+# Safe five-sensor bring-up profile. No actuator, recording, inference or RL
+# process is enabled by this file or by sensors.launch.py.
+system:
+  name: control_robot_five_sensor_test
+
+teleop:
+  enabled: false
+
+xarm:
+  enabled: false
+
+robotiq:
+  enabled: false
+
+reset:
+  enabled: false
+
+inference:
+  enabled: false
+
+rl:
+  enabled: false
+
+cameras:
+  enabled: true
+  devices:
+    - name: left_camera
+      enabled: true
+      vendor: realsense
+      model: d435
+      serial_number: "254622075079"
+      topic_prefix: camera/left
+      required: true
+      startup_delay_sec: 0.5
+      color: {enabled: true, width: 640, height: 480, fps: 30}
+      depth: {enabled: false}
+      infrared: {enabled: true, width: 640, height: 480, fps: 30}
+      point_cloud: {enabled: false}
+
+    - name: right_camera
+      enabled: true
+      vendor: realsense
+      model: d435
+      serial_number: "254522074404"
+      topic_prefix: camera/right
+      required: true
+      startup_delay_sec: 1.5
+      color: {enabled: true, width: 640, height: 480, fps: 30}
+      depth: {enabled: false}
+      infrared: {enabled: true, width: 640, height: 480, fps: 30}
+      point_cloud: {enabled: false}
+
+    - name: top_camera
+      enabled: true
+      vendor: orbbec
+      model: femto_bolt
+      serial_number: "CL8E36300RW"
+      topic_prefix: camera/side
+      required: true
+      startup_delay_sec: 2.5
+      color: {enabled: true, width: 1280, height: 720, fps: 30}
+      depth: {enabled: true, width: 640, height: 576, fps: 30}
+      infrared: {enabled: false}
+      point_cloud: {enabled: false}
+
+tactile:
+  enabled: true
+  devices:
+    - name: left_tactile
+      enabled: true
+      serial_number: "OG000475"
+      topic_prefix: tactile/left
+      required: true
+      startup_delay_sec: 3.5
+      publish_rate_hz: 30.0
+      config_path: ""
+      outputs:
+        rectify: true
+
+    - name: right_tactile
+      enabled: true
+      serial_number: "OG000485"
+      topic_prefix: tactile/right
+      required: true
+      startup_delay_sec: 4.5
+      publish_rate_hz: 30.0
+      config_path: ""
+      outputs:
+        rectify: true
+
+warmup:
+  enabled: false
+
+speech:
+  enabled: false
+
+recording:
+  enabled: false
+  streams:
+    left_camera:
+      topic: "/camera/left/color"
+      type: rgb
+    right_camera:
+      topic: "/camera/right/color"
+      type: rgb
+    top_camera:
+      topic: "/camera/side/color"
+      type: rgb
+    tactile_left:
+      topic: "/tactile/left/rectify"
+      type: rgb
+    tactile_right:
+      topic: "/tactile/right/rectify"
+      type: rgb
+
+dashboard:
+  enabled: true
+  host: "127.0.0.1"
+  port: 8080
+  open_browser: true
+  status_rate_hz: 2.0
+  rosout_min_level: warn
+  rosout_history_size: 200
+  service_timeout_sec: 10.0
+  rerun:
+    enabled: true
+    grpc_port: 9876
+    web_port: 9090
+    server_memory_limit: "16MiB"
+    max_fps: 10.0
+    preview_scale: 0.5

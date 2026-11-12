@@ -1,0 +1,41 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: xarm_base
+    Background Color: 40; 40; 40
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Base XY grid (metres)
+      Enabled: true
+      Cell Size: 0.1
+      Plane Cell Count: 20
+    - Class: rviz_default_plugins/Axes
+      Name: Robot base axes
+      Enabled: true
+      Reference Frame: xarm_base
+      Length: 0.2
+      Radius: 0.005
+    - Class: rviz_default_plugins/Pose
+      Name: Mapped TCP target (preview uses virtual origin)
+      Enabled: true
+      Topic:
+        Value: /vr/preview_target
+        Reliability Policy: Reliable
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 1
+      Shape: Axes
+      Axes Length: 0.15
+      Axes Radius: 0.004
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 1.5
+      Pitch: 0.65
+      Yaw: 0.75
+Window Geometry:
+  Width: 1100
+  Height: 800

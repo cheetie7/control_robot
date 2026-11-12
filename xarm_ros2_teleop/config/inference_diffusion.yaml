@@ -1,0 +1,26 @@
+# Single-PC synchronous inference; inherit hardware, image geometry and driver limits.
+base_config: teleop_system.yaml
+
+# Keep the base teleop.enabled for the existing reset config validator.
+# inference mode suppresses FACTR startup in teleop.launch.py.
+
+warmup:
+  enabled: false
+
+rl:
+  enabled: false
+
+inference:
+  enabled: true
+  host: "127.0.0.1"
+  port: 8081
+  prompt: "insert the block"
+  policy_frequency_hz: 30.0
+  image_streams: [top_camera, left_camera, right_camera]
+
+evaluation:
+  enabled: true
+  dataset_root: "~/datasets/diffusion_eval"
+
+recording:
+  instruction: "insert the block"

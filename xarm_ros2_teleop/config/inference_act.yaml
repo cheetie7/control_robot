@@ -1,0 +1,5 @@
+# Reuse the three-camera geometry, action limits and 30 Hz rollout settings.
+base_config: inference_diffusion.yaml
+
+evaluation:
+  dataset_root: "~/datasets/act_eval"

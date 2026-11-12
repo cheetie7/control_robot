@@ -1,0 +1,473 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="gello_real_dynamic">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.001663604 0.000000181 0.005015813" rpy="0 0 0" />
+      <mass value="0.187622278" />
+      <inertia ixx="1.022256730250e-04" ixy="-3.224593012555e-09" ixz="2.185141455352e-07" iyy="6.092075909536e-04" iyz="2.318137882666e-13" izz="7.083040155658e-04" />
+    </inertial>
+    <visual>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/base.stl" />
+      </geometry>
+      <material name="base_mat">
+        <color rgba="0.4500 0.4800 0.5300 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/base.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_1">
+    <inertial>
+      <origin xyz="0.000000020 0.012162976 0.014776584" rpy="0 0 0" />
+      <mass value="0.016490870" />
+      <inertia ixx="5.905803901998e-06" ixy="-8.732868513260e-12" ixz="3.480035729951e-12" iyy="4.430678602502e-06" iyz="1.162624337126e-07" izz="3.441967475605e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.000000000 0.019900000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L1.stl" />
+      </geometry>
+      <material name="L1_mat">
+        <color rgba="0.2000 0.5000 0.9600 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.000000000 0.019900000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L1.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_2">
+    <inertial>
+      <origin xyz="0.000000000 -0.041365124 0.005034305" rpy="0 0 0" />
+      <mass value="0.048581152" />
+      <inertia ixx="5.642893512980e-05" ixy="-4.745043505144e-13" ixz="6.370341569003e-14" iyy="5.828815508983e-06" iyz="-2.981748645101e-06" izz="5.500988489444e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.000000000 0.024900000 -0.004850000" rpy="1.570796327 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L2.stl" />
+      </geometry>
+      <material name="L2_mat">
+        <color rgba="0.0600 0.7200 0.5100 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.000000000 0.024900000 -0.004850000" rpy="1.570796327 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L2.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_3">
+    <inertial>
+      <origin xyz="0.011573327 0.006603619 0.019157769" rpy="0 0 0" />
+      <mass value="0.011792556" />
+      <inertia ixx="4.492106700652e-06" ixy="-2.652753357010e-07" ixz="-6.777796106482e-07" iyy="3.716312388219e-06" iyz="-1.443029912677e-06" izz="1.880287908545e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.004200000 0.010201720 0.000600000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L3.stl" />
+      </geometry>
+      <material name="L3_mat">
+        <color rgba="0.9600 0.6200 0.0700 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.004200000 0.010201720 0.000600000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L3.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_4">
+    <inertial>
+      <origin xyz="-0.029680429 -0.012856813 -0.015882701" rpy="0 0 0" />
+      <mass value="0.053851001" />
+      <inertia ixx="2.409361308212e-05" ixy="-8.689023956383e-06" ixz="-1.374948484004e-05" iyy="4.358015351696e-05" iyz="-3.640729446476e-06" izz="3.850842295590e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.068517134 -0.027053739 -0.017800000" rpy="-2.591813939 -1.570796327 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L4.stl" />
+      </geometry>
+      <material name="L4_mat">
+        <color rgba="0.9400 0.2700 0.2700 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.068517134 -0.027053739 -0.017800000" rpy="-2.591813939 -1.570796327 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L4.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_5">
+    <inertial>
+      <origin xyz="0.012394041 0.000000000 0.027190033" rpy="0 0 0" />
+      <mass value="0.024347669" />
+      <inertia ixx="1.607225906876e-05" ixy="-4.934890928882e-17" ixz="-2.357135187970e-06" iyy="1.496507274419e-05" iyz="-4.238622913449e-16" izz="4.231582991075e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.005500000 0.000000000 -0.001150000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L5.stl" />
+      </geometry>
+      <material name="L5_mat">
+        <color rgba="0.5500 0.3600 0.9600 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.005500000 0.000000000 -0.001150000" rpy="0.000000000 -0.000000000 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L5.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link_6">
+    <inertial>
+      <origin xyz="-0.017779784 0.012685224 -0.001862370" rpy="0 0 0" />
+      <mass value="0.008543544" />
+      <inertia ixx="1.482388506318e-06" ixy="1.193522926067e-06" ixz="-1.331120010341e-08" iyy="2.156155754341e-06" iyz="9.497053842612e-09" izz="3.409272371006e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.007063963 -0.013682943 -0.001950000" rpy="-1.370091106 -1.570796327 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L6.stl" />
+      </geometry>
+      <material name="L6_mat">
+        <color rgba="0.9300 0.2800 0.6000 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.007063963 -0.013682943 -0.001950000" rpy="-1.370091106 -1.570796327 0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/L6.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="handle_link">
+    <inertial>
+      <origin xyz="-0.016644666 0.000786493 0.032427148" rpy="0 0 0" />
+      <mass value="0.079597932" />
+      <inertia ixx="3.967864702960e-05" ixy="-1.132749646919e-06" ixz="1.470202059298e-05" iyy="6.714800192330e-05" iyz="6.320554782319e-07" izz="4.082099955747e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0.015272000 0.000000000 0.021394000" rpy="1.570796327 0.000000000 -0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/handle.stl" />
+      </geometry>
+      <material name="handle_mat">
+        <color rgba="0.0500 0.3400 0.8000 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.015272000 0.000000000 0.021394000" rpy="1.570796327 0.000000000 -0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/handle.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="trigger_link">
+    <inertial>
+      <origin xyz="0.004009471 0.023269254 0.007457246" rpy="0 0 0" />
+      <mass value="0.014058350" />
+      <inertia ixx="3.383170438325e-06" ixy="-2.819250786456e-07" ixz="-8.788442017132e-08" iyy="9.944394045896e-07" iyz="-4.771071138279e-07" izz="3.143058536534e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.001039000 0.000050000 0.014033333" rpy="-1.570796327 0.000000000 -0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/trigger.stl" />
+      </geometry>
+      <material name="trigger_mat">
+        <color rgba="0.9500 0.5800 0.1000 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.001039000 0.000050000 0.014033333" rpy="-1.570796327 0.000000000 -0.000000000" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/trigger.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j1_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="1.590000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.590000000000e-06" iyz="0.000000000000e+00" izz="1.728000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J1_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J1_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j2_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.700000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.950000000000e-06" iyz="0.000000000000e+00" izz="1.950000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J2_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J2_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j3_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.214000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.464000000000e-06" iyz="0.000000000000e+00" izz="1.950000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J3_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J3_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j4_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.544000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.950000000000e-06" iyz="0.000000000000e+00" izz="3.294000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J4_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J4_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j5_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.808000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.728000000000e-06" iyz="0.000000000000e+00" izz="2.808000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J5_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J5_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j6_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.808000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.728000000000e-06" iyz="0.000000000000e+00" izz="2.808000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J6_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J6_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j7_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.808000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.728000000000e-06" iyz="0.000000000000e+00" izz="2.808000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J7_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J7_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="j8_servo_body">
+    <inertial>
+      <origin xyz="0.000000000 0.000000000 0.000000000" rpy="0 0 0" />
+      <mass value="0.018000000" />
+      <inertia ixx="2.808000000000e-06" ixy="0.000000000000e+00" ixz="0.000000000000e+00" iyy="1.728000000000e-06" iyz="0.000000000000e+00" izz="2.808000000000e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J8_servo_body.stl" />
+      </geometry>
+      <material name="servo_black">
+        <color rgba="0.02 0.02 0.025 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="real_urdf_meshes/J8_servo_body.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="j1_servo_body_fixed" type="fixed">
+    <parent link="base_link" />
+    <child link="j1_servo_body" />
+    <origin xyz="0.075000000 0.000000000 0.020900000" rpy="0.000000000 -0.000000000 0.000000000" />
+  </joint>
+  <joint name="j2_servo_body_fixed" type="fixed">
+    <parent link="link_1" />
+    <child link="j2_servo_body" />
+    <origin xyz="0.000000000 0.025900000 0.046000000" rpy="0.000000000 -0.000000000 0.000000000" />
+  </joint>
+  <joint name="j3_servo_body_fixed" type="fixed">
+    <parent link="link_2" />
+    <child link="j3_servo_body" />
+    <origin xyz="0.000000000 -0.091350000 -0.007100000" rpy="1.570796327 -0.000000000 0.000000000" />
+  </joint>
+  <joint name="j4_servo_body_fixed" type="fixed">
+    <parent link="link_3" />
+    <child link="j4_servo_body" />
+    <origin xyz="0.028400000 0.015002220 0.035730750" rpy="-1.570796327 -0.497418837 -1.570796327" />
+  </joint>
+  <joint name="j5_servo_body_fixed" type="fixed">
+    <parent link="link_4" />
+    <child link="j5_servo_body" />
+    <origin xyz="-0.077730111 -0.006444533 -0.033854000" rpy="-0.200705221 -1.570796327 0.000000000" />
+  </joint>
+  <joint name="j6_servo_body_fixed" type="fixed">
+    <parent link="link_5" />
+    <child link="j6_servo_body" />
+    <origin xyz="0.006550000 0.000000000 0.075100000" rpy="1.570796327 0.000000000 -1.570796327" />
+  </joint>
+  <joint name="j7_servo_body_fixed" type="fixed">
+    <parent link="link_6" />
+    <child link="j7_servo_body" />
+    <origin xyz="-0.048722881 0.021543035 -0.001950000" rpy="0.200705221 -1.570796327 0.000000000" />
+  </joint>
+  <joint name="j8_servo_body_fixed" type="fixed">
+    <parent link="handle_link" />
+    <child link="j8_servo_body" />
+    <origin xyz="0.005973333 -0.009000000 0.019953000" rpy="1.570796327 0.000000000 -0.000000000" />
+  </joint>
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link" />
+    <child link="link_1" />
+    <origin xyz="0.075000000 0.000000000 0.032500000" rpy="0.000000000 -0.000000000 -1.570796327" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_2" type="revolute">
+    <parent link="link_1" />
+    <child link="link_2" />
+    <origin xyz="0.000000000 0.041500000 0.046000000" rpy="-1.570796327 -0.000000000 0.000000000" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_3" type="revolute">
+    <parent link="link_2" />
+    <child link="link_3" />
+    <origin xyz="0.000000000 -0.103950000 -0.007100000" rpy="-1.570796327 -0.000000000 3.141592654" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_4" type="revolute">
+    <parent link="link_3" />
+    <child link="link_4" />
+    <origin xyz="0.039000000 0.015002220 0.035730750" rpy="-1.570796327 -0.000000000 -1.570796327" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_5" type="revolute">
+    <parent link="link_4" />
+    <child link="link_5" />
+    <origin xyz="-0.090077181 -0.003932591 -0.033854000" rpy="-0.200705221 -1.570796327 0.000000000" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_6" type="revolute">
+    <parent link="link_5" />
+    <child link="link_6" />
+    <origin xyz="-0.006050000 0.000000000 0.075100000" rpy="-1.570796327 1.370091106 1.570796327" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_7" type="revolute">
+    <parent link="link_6" />
+    <child link="handle_link" />
+    <origin xyz="-0.061069951 0.019031093 -0.001950000" rpy="-1.570796327 -0.000000000 1.771501548" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.520000" velocity="10.786135" />
+  </joint>
+  <joint name="joint_8" type="revolute">
+    <parent link="handle_link" />
+    <child link="trigger_link" />
+    <origin xyz="0.005973333 0.003600000 0.019953000" rpy="1.570796327 0.000000000 -0.000000000" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14159265" upper="3.14159265" effort="0.215000" velocity="40.107666" />
+  </joint>
+</robot>
